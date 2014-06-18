@@ -1,2 +1,46 @@
-apply plugin: 'java'
 apply from: './libraries.gradle'
+
+allprojects {
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.github.samueltbrown:gradle-cucumber-plugin:0.5'
+    }
+}
+
+ext {
+    javaLanguageLevel = '1.8'
+}
+
+subprojects { subProject ->
+  apply plugin: 'java'
+  apply plugin: 'cucumber'
+  apply plugin: 'findbugs'
+  apply plugin: 'checkstyle'
+  apply plugin: 'build-dashboard'
+  apply plugin: 'project-report'
+
+  dependencies {
+    cucumberCompile libraries.cukeGroovy
+  }
+
+  cucumber {
+    formats = ['pretty','json:build/cucumber.json','junit:build/cucumber.xml']
+  }
+
+  group = 'org.xorcisr'
+
+  targetCompatibility = rootProject.javaLanguageLevel
+  sourceCompatibility = rootProject.javaLanguageLevel
+}
+
